@@ -1,34 +1,37 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { decrement, increment } from './store/counter.js';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Categories from './components/Categories';
+import Products from './components/Products';
+import SimpleCart from './components/SimpleCart';
+import ProductDetails from './components/Products/detail';
+import ShoppingCart from './components/SimpleCart/shoppingCart';
+import { fetchCategories, fetchProducts } from './components/Store/actions';
+import { Container } from '@mui/material';
+import './App.css';
 
+const App = () => {
+  const dispatch = useDispatch();
 
-function App() {
+  useEffect(() => {
+    dispatch(fetchCategories());
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
-
-const count = useSelector((state) => state.counter.count);
-const numberOfClicks = useSelector((state) => state.counter.numberOfClicks);
-
-const dispatch = useDispatch();
-// OR
-// const count = useSelector((state) => state.counter); then we can use {counter.count} in the jsx below
-
-
-function handleDecrement(){
-  dispatch(decrement(5));
-}
-
-function handleIncrement(){
-  dispatch(increment(5));
-}
   return (
-    <>
-    <h1>Redux Counter</h1>
-    <h3>Current Count: ({numberOfClicks}): {count}</h3>
-    <button onClick={handleDecrement}>Decrement</button>
-    <button onClick={handleIncrement}>Increment</button>
-    </>
-   
-  )
-}
+    <Container className="container">
+      <Header />
+      <SimpleCart />
+      <Routes>
+        <Route path="/" element={<><Categories /><Products /></>} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/cart" element={<ShoppingCart />} />
+      </Routes>
+      <Footer />
+    </Container>
+  );
+};
 
-export default App
+export default App;
